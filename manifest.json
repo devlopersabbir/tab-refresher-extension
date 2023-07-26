@@ -1,17 +1,18 @@
 {
-    "name": "tab-refresher", 
-    "version": "0.0.5", 
-    "manifest_version": 3,
-    "action": {
-        "default_popup": "src/popup/popup.html"
-    },
-    "background": {
-        "service_worker": "src/background/background.ts"
-    },
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["src/content/content.ts"]
-        }
-    ]
+  "name": "tab-refresher",
+  "version": "0.0.5",
+  "manifest_version": 3,
+  "permissions": ["tabs", "activeTab"],
+  "action": {
+    "default_popup": "src/popup/popup.html"
+  },
+  "background": {
+    "service_worker": "src/background/background.ts"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content.ts"]
+    }
+  ]
 }
