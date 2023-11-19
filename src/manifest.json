@@ -21,5 +21,5 @@
     "{{chrome}}.service_worker": "src/background.ts",
     "{{firefox}}.scripts": ["src/background.ts"]
   },
-  "permission": ["tab", "activeTab", "storage"]
+  "permissions": ["tab", "activeTab", "storage"]
 }
