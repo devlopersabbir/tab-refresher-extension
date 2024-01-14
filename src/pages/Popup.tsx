@@ -1,18 +1,39 @@
-import { useEffect } from 'react';
+import browser from "webextension-polyfill";
+import { useEffect, useState } from "react";
 import "./Popup.css";
+import { getMiliSecond } from "../background";
 
-export default function() {
+export default function Popup() {
+  const [second, setSecond] = useState<number>(0);
+
+  const click = async () => {
+    const mili = Number(second) * 1000;
+    browser.storage.local.set({
+      second: mili,
+    });
+  };
+
   useEffect(() => {
-    console.log("Hello from the popup!");
-  }, []);
+    const getSecond = async () => {
+      try {
+        const res = await getMiliSecond();
+        setSecond(res);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
+    getSecond();
+  }, [second]);
   return (
     <div>
-      <img src="/icon-with-shadow.svg" />
-      <h1>vite-plugin-web-extension</h1>
-      <p>
-        Template: <code>react-ts</code>
-      </p>
+      <input
+        type="number"
+        onChange={(e) => setSecond(Number(e.target.value))}
+        placeholder="enter second"
+        value={second}
+      />
+      <button onClick={click}>click me</button>
     </div>
-  )
+  );
 }

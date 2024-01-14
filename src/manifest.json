@@ -1,7 +1,4 @@
 {
-  "name": "Tab Refresher Pro",
-  "description": "Tab Refresher Pro",
-  "version": "0.0.3",
   "{{chrome}}.manifest_version": 3,
   "{{firefox}}.manifest_version": 2,
   "icons": {
@@ -21,5 +18,19 @@
     "{{chrome}}.service_worker": "src/background.ts",
     "{{firefox}}.scripts": ["src/background.ts"]
   },
-  "permissions": ["tab", "activeTab", "storage"]
+  "content_scripts": [
+    {
+      "js": ["src/scripts/content.ts"],
+      "matches": ["https://*/*"]
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "notifications",
+    "storage",
+    "alarms",
+    "contextMenus"
+  ],
+  "host_permissions": ["<all_urls>"]
 }
