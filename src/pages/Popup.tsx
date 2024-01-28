@@ -1,30 +1,29 @@
-import browser from "webextension-polyfill";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./Popup.css";
-import { getMiliSecond } from "../background";
+import Browser from "webextension-polyfill";
 
 export default function Popup() {
   const [second, setSecond] = useState<number>(0);
 
   const click = async () => {
-    const mili = Number(second) * 1000;
-    browser.storage.local.set({
-      second: mili,
-    });
+    if (second < 2) return;
+    try {
+      const [tab] = await Browser.tabs.query({
+        currentWindow: true,
+        active: true,
+      });
+      if (tab.id) {
+        await Browser.runtime.sendMessage({
+          tabId: tab.id,
+          start: true,
+          time: second,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  useEffect(() => {
-    const getSecond = async () => {
-      try {
-        const res = await getMiliSecond();
-        setSecond(res);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    getSecond();
-  }, [second]);
   return (
     <div>
       <input

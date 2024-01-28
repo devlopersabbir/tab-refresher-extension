@@ -1,0 +1,15 @@
+{
+  "name": "x",
+  "description": "x",
+  "manifest_version": 3,
+  "version": "0.0.1",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "x"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": ["tabs", "activeTab", "storage", "nativeMessaging"]
+}

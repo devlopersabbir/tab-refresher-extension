@@ -1,4 +1,4 @@
-const useFormat = (totalSecond: number | string): string => {
+export const useFormat = (totalSecond: number | string): string => {
   // check totalSecond as string or number
   if (typeof totalSecond === "string") {
     totalSecond = Number(totalSecond); // if string then convert to number
