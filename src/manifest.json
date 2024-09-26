@@ -15,13 +15,13 @@
     "default_popup": "src/popup.html"
   },
   "background": {
-    "{{chrome}}.service_worker": "src/background.ts",
-    "{{firefox}}.scripts": ["src/background.ts"]
+    "{{chrome}}.service_worker": "src/background/index.ts",
+    "{{firefox}}.scripts": ["src/background/index.ts"]
   },
   "content_scripts": [
     {
-      "js": ["src/scripts/content.ts"],
-      "matches": ["https://*/*"]
+      "js": ["src/scripts/index.ts"],
+      "matches": ["<all_urls>"]
     }
   ],
   "permissions": [
