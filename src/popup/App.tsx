@@ -2,6 +2,7 @@ import { useState } from "react";
 import { storageAPI } from "../service/storageService";
 import { sendRequestToTab } from "../plugin/tabPlugin";
 import Browser from "webextension-polyfill";
+import { RefresherState } from "../@types/storage";
 
 const App = () => {
   const [interval, setInterval] = useState("5");
@@ -13,7 +14,23 @@ const App = () => {
       active: true,
       currentWindow: true,
     });
-    console.log(tabs);
+    sendRequestToTab<RefresherState>({
+      type: "TAB_REFRESH",
+      payload: {
+        tabId: String(tabs.id),
+        tab: {
+          random: false,
+          time: {
+            time_second: +interval,
+          },
+          tabId: String(tabs.id),
+          tab_info: {
+            path_name: "",
+            full_url: "",
+          },
+        },
+      },
+    });
   };
 
   return (
