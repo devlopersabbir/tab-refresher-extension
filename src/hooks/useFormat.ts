@@ -17,4 +17,3 @@ export const useFormat = (totalSecond: number | string): string => {
 };
 
 const time = useFormat("420");
-console.log(time);
