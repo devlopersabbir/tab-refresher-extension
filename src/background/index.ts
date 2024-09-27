@@ -1,51 +1,18 @@
 // name: Tab Refresher Pro
+console.log("hello");
 
 ////////////////////////////////////////////////
 import Browser from "webextension-polyfill";
-let count = 0;
-let intervalId: number | null = null;
-let currentTabId: number = 0;
-let tabTimes: number = 0;
+import { sendRequestToTab } from "../plugin/tabPlugin";
 
-Browser.runtime.onMessage.addListener(({ tabId, start, time }) => {
-  if (start) {
-    count = 0;
-    tabTimes = time;
-    createInterval();
-    createAlerm(time);
-    currentTabId = tabId;
-  } else {
-    clearInterval(intervalId!);
-    intervalId = null;
+Browser.tabs.onUpdated.addListener((tabId, _, tab) => {
+  const url = tab.url;
+  if (url) {
+    sendRequestToTab({
+      type: "TAB_ID",
+      payload: {
+        tabId,
+      },
+    });
   }
-});
-
-const createInterval = () => {
-  if (intervalId === null) {
-    intervalId = setInterval(() => {
-      count++;
-      if (count === tabTimes) return (count = 0);
-      Browser.action.setBadgeText({
-        tabId: currentTabId,
-        text: `${count}`,
-      });
-    }, 1000); // Increase count every second
-  }
-};
-
-const createAlerm = (time: number) => {
-  Browser.alarms.create({
-    delayInMinutes: time / 60,
-    periodInMinutes: time / 60,
-  });
-};
-
-if (currentTabId === 0) {
-  Browser.alarms.clearAll();
-}
-
-Browser.alarms.onAlarm.addListener(async () => {
-  Browser.tabs.reload(currentTabId, {
-    bypassCache: true,
-  });
 });
