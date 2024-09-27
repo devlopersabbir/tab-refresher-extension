@@ -1,18 +1,26 @@
 // name: Tab Refresher Pro
-console.log("hello");
-
 ////////////////////////////////////////////////
 import Browser from "webextension-polyfill";
-import { sendRequestToTab } from "../plugin/tabPlugin";
+import { RefresherState } from "../@types/storage";
+// import { sendRequestToTab } from "../plugin/tabPlugin";
 
 Browser.tabs.onUpdated.addListener((tabId, _, tab) => {
   const url = tab.url;
-  if (url) {
-    sendRequestToTab({
-      type: "TAB_ID",
-      payload: {
-        tabId,
-      },
-    });
+  console.log(url);
+  console.log(tabId);
+
+  // setTimeout(() => {
+  //   Browser.tabs.reload(tabId, {
+  //     bypassCache: true,
+  //   });
+  // }, 10000);
+});
+
+Browser.runtime.onMessage.addListener((message: RefresherState) => {
+  if (message.type === "TAB_REFRESH") {
+    // do something
+    setInterval(() => {
+      Browser.tabs.reload(Number(message.payload.tabId));
+    }, message.payload.tab.time.time_second);
   }
 });

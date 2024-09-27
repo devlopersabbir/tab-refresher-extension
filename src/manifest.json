@@ -32,5 +32,5 @@
     "alarms",
     "contextMenus"
   ],
-  "{{chrome}}.host_permissions": ["<all_urls>"]
+  "{{chrome}}.host_permissions": ["*://*/*"]
 }
