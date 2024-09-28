@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { storageAPI } from "../service/storageService";
 import { sendRequestToTab } from "../plugin/tabPlugin";
 import Browser from "webextension-polyfill";
 import { RefresherState } from "../@types/storage";
 
 const App = () => {
-  const [interval, setInterval] = useState("5");
+  const [interval, setInterval] = useState<number>(5);
   const [isEnabled, setIsEnabled] = useState(false);
 
   const handleApply = async () => {
@@ -26,10 +26,26 @@ const App = () => {
           tabId: String(tabs.id),
           tab_info: undefined,
         },
+      }
+    await storageAPI.set({
+      refresh: {
+        time: interval,
+        isEnabled,
+        tabId: tabs.id,
       },
     });
   };
 
+  useEffect(() => {
+    storageAPI
+      .get("refresh")
+      .then((value) => {
+        console.log("effect value: ", value);
+        setInterval(value.time);
+        setIsEnabled(value.isEnabled);
+      })
+      .catch((error) => console.log(error));
+  }, []);
   return (
     <div className="w-64 p-4 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
       <h1 className="text-xl font-bold mb-4">Tab Refresher</h1>
@@ -42,7 +58,7 @@ const App = () => {
           type="number"
           id="interval"
           value={interval}
-          onChange={(e) => setInterval(e.target.value)}
+          onChange={(e) => setInterval(+e.target.value)}
           className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           min="1"
         />
