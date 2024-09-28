@@ -24,10 +24,7 @@ const App = () => {
             time_second: +interval,
           },
           tabId: String(tabs.id),
-          tab_info: {
-            path_name: "",
-            full_url: "",
-          },
+          tab_info: undefined,
         },
       },
     });

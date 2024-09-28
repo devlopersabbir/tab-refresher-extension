@@ -15,7 +15,7 @@ export type TTabInfo = {
 
 export type TTab = {
   tabId: string | number;
-  tab_info: TTabInfo;
+  tab_info?: TTabInfo;
   time: TTabTime;
   random: TTabTimingRandom | boolean | undefined;
 };
