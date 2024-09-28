@@ -14,7 +14,19 @@ const App = () => {
       active: true,
       currentWindow: true,
     });
-
+    sendRequestToTab<RefresherState>({
+      type: "TAB_REFRESH",
+      payload: {
+        tabId: String(tabs.id),
+        tab: {
+          random: false,
+          time: {
+            time_second: +interval,
+          },
+          tabId: String(tabs.id),
+          tab_info: undefined,
+        },
+      }
     await storageAPI.set({
       refresh: {
         time: interval,
