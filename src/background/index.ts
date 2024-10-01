@@ -1,50 +1,55 @@
-// name: Tab Refresher Pro
-////////////////////////////////////////////////
 import Browser from "webextension-polyfill";
-import { RefresherState } from "../@types/storage";
-import { storageAPI } from "../service/storageService";
-// import { sendRequestToTab } from "../plugin/tabPlugin";
 
-// state
-let count = 0;
-Browser.tabs.onUpdated.addListener((tabId, _, tab) => {
-  const url = tab.url;
-  console.log(url);
-  console.log(tabId);
+class TabRefresher {
+  private tabTimers: { [key: number]: number } = {}; // Store interval timers by tabId
 
-  // setTimeout(() => {
-  //   Browser.tabs.reload(tabId, {
-  //     bypassCache: true,
-  //   });
-  // }, 10000);
-});
-
-storageAPI.onChanged.addListener((changes) => {
-  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-    if (key === "refresh") {
-      // page reloading
-      function reloadPage() {
-        Browser.tabs.reload(Number(newValue.tabId), {
-          bypassCache: true,
-        });
-        count++;
-      }
-      // create interval
-      const interval = setInterval(reloadPage, Number(newValue.time) * 1000);
-      // remove interval if isEnabled is false
-      if (!newValue.isEnabled) {
-        clearInterval(interval);
-        count = 0;
-      }
+  // Start refreshing a specific tab based on its tabId
+  startTabRefresh(tabId: number, time: number): void {
+    if (this.tabTimers[tabId]) {
+      console.log(`Tab ${tabId} is already being refreshed.`);
+      return;
     }
+
+    let count = 0;
+    let intervalId = setInterval(() => {
+      count = (count % time) + 1;
+      this.updateBadge(count); // Update badge with current count
+
+      if (count === time) {
+        this.refreshTab(tabId); // Refresh the tab when count reaches 30
+      }
+    }, 1000) as unknown as number; // Explicitly cast the result to number
+
+    this.tabTimers[tabId] = intervalId;
+  }
+
+  // Stop refreshing the tab
+  stopTabRefresh(tabId: number): void {
+    clearInterval(this.tabTimers[tabId]);
+    delete this.tabTimers[tabId];
+  }
+
+  // Refresh the tab
+  private refreshTab(tabId: number): void {
+    Browser.tabs.reload(tabId, { bypassCache: true });
+  }
+
+  // Update badge text with the count
+  private updateBadge(count: number): void {
+    Browser.action.setBadgeText({ text: count.toString() });
+  }
+}
+
+// Initialize the TabRefresher class
+const tabRefresher = new TabRefresher();
+
+// Handle messages from the popup or other parts of the extension
+Browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  const { action, tabId, time } = message;
+
+  if (action === "start") {
+    tabRefresher.startTabRefresh(tabId, time);
+  } else if (action === "stop") {
+    tabRefresher.stopTabRefresh(tabId);
   }
 });
-
-// Browser.runtime.onMessage.addListener((message: RefresherState) => {
-//   if (message.type === "TAB_REFRESH") {
-//     // do something
-//     setInterval(() => {
-//       Browser.tabs.reload(Number(message.payload.tabId));
-//     }, message.payload.tab.time.time_second);
-//   }
-// });

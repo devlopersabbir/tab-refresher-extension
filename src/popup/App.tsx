@@ -5,47 +5,22 @@ import Browser from "webextension-polyfill";
 import { RefresherState } from "../@types/storage";
 
 const App = () => {
-  const [interval, setInterval] = useState<number>(5);
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [interval, setInterval] = useState<number>(0);
+  const [isEnabled, setIsEnabled] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleApply = async () => {
-    // Here you would typically send a message to your background script
+    setIsLoading(true);
     const [tabs] = await Browser.tabs.query({
       active: true,
       currentWindow: true,
     });
-    sendRequestToTab<RefresherState>({
-      type: "TAB_REFRESH",
-      payload: {
-        tabId: String(tabs.id),
-        tab: {
-          random: false,
-          time: {
-            time_second: +interval,
-          },
-          tabId: String(tabs.id),
-          tab_info: undefined,
-        },
-      }
-    await storageAPI.set({
-      refresh: {
-        time: interval,
-        isEnabled,
-        tabId: tabs.id,
-      },
-    });
+
+    const tabId = tabs.id;
+    Browser.runtime.sendMessage({ action: "start", tabId, time: interval });
+    setIsLoading(false);
   };
 
-  useEffect(() => {
-    storageAPI
-      .get("refresh")
-      .then((value) => {
-        console.log("effect value: ", value);
-        setInterval(value.time);
-        setIsEnabled(value.isEnabled);
-      })
-      .catch((error) => console.log(error));
-  }, []);
   return (
     <div className="w-64 p-4 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
       <h1 className="text-xl font-bold mb-4">Tab Refresher</h1>
@@ -58,13 +33,17 @@ const App = () => {
           type="number"
           id="interval"
           value={interval}
-          onChange={(e) => setInterval(+e.target.value)}
+          onChange={(e) => {
+            const intervalTime = e.target.value;
+            setInterval(+intervalTime); // Update interval state
+            console.log(+intervalTime);
+          }}
           className="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           min="1"
         />
       </div>
 
-      <div className="flex items-center mb-4">
+      {/* <div className="flex items-center mb-4">
         <label htmlFor="toggle" className="flex items-center cursor-pointer">
           <div className="relative">
             <input
@@ -75,7 +54,7 @@ const App = () => {
               onChange={() => setIsEnabled(!isEnabled)}
             />
             <div
-              className={`w-10 h-6 bg-gray-300 rounded-full shadow-inner ${
+              className={`w-10 h-6 bg-gray-300 rounded-full shadow-inner transition-colors duration-200 ${
                 isEnabled ? "bg-blue-500" : ""
               }`}
             ></div>
@@ -89,14 +68,30 @@ const App = () => {
             {isEnabled ? "Enabled" : "Disabled"}
           </div>
         </label>
-      </div>
+      </div> */}
 
-      <button
-        onClick={handleApply}
-        className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-      >
-        Apply Settings
-      </button>
+      <div className="flex flex-col justify-between">
+        <button
+          onClick={handleApply}
+          className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          {isLoading ? "Applying..." : "Apply Settings"}
+        </button>
+        <button
+          onClick={async () => {
+            const [tabs] = await Browser.tabs.query({
+              active: true,
+              currentWindow: true,
+            });
+
+            const tabId = tabs.id;
+            Browser.runtime.sendMessage({ action: "stop", tabId });
+          }}
+          className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Stop
+        </button>
+      </div>
     </div>
   );
 };
