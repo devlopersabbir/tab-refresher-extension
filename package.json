@@ -9,6 +9,34 @@
     "name": "Sabbir Hossain Shuvo",
     "url": "https://github.com/devlopersabbir"
   },
+  "release": {
+    "tagFormat": "v${version}",
+    "branches": [
+      "+([0-9])?(.{+([0-9]),x}).x",
+      "master",
+      "next",
+      "next-major",
+      {
+        "name": "beta",
+        "prerelease": true
+      },
+      {
+        "name": "alpha",
+        "prerelease": true
+      }
+    ],
+    "repositoryUrl": "https://github.com/devlopersabbir/tab-refresher-extension"
+  },
+  "bugs": {
+    "email": "devloeprsabbir@gmail.com",
+    "url": "https://github.com/devlopersabbir"
+  },
+  "repository": {
+    "directory": "tab-refresher-pro",
+    "type": "GIT",
+    "url": "https://github.com/devlopersabbir/tab-refresher-extension"
+  },
+  "readme": "./README.md",
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.1",
     "react": "^18.2.0",
