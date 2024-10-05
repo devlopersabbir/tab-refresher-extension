@@ -45,6 +45,6 @@ read date
 # Now you can run your JavaScript with the selected file path
 echo -e "\033[34mProcessing your request...\033[0m"  # Blue text
 sleep 1  # Simulate some processing time
-node actions.js "$filePath" "$commitMessage" "$date"
+node action.js "$filePath" "$commitMessage" "$date"
 
 echo -e "\033[32mDone!\033[0m"
