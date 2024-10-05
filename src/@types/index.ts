@@ -4,3 +4,4 @@ export type RequestType<T = unknown> = {
 };
 
 export * from "./tab";
+export * from "./message";

@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { storageAPI } from "../service/storageService";
-import { sendRequestToTab } from "../plugin/tabPlugin";
 import Browser from "webextension-polyfill";
-import { RefresherState } from "../@types/storage";
+import { sendRequestToExtension } from "../plugin/tabPlugin";
 
 const App = () => {
   const [interval, setInterval] = useState<number>(0);
@@ -11,16 +9,16 @@ const App = () => {
 
   const handleApply = async () => {
     setIsLoading(true);
-    const [tabs] = await Browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    });
-
-    const tabId = tabs.id;
-    Browser.runtime.sendMessage({ action: "start", tabId, time: interval });
+    console.log("fuck");
     setIsLoading(false);
   };
 
+  useEffect(() => {
+    sendRequestToExtension({
+      type: "INIT_UI",
+      payload: {},
+    });
+  }, []);
   return (
     <div className="w-64 p-4 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
       <h1 className="text-xl font-bold mb-4">Tab Refresher</h1>

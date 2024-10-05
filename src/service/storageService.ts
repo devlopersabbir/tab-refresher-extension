@@ -27,7 +27,7 @@ export class StorageService<Value> {
 
   value = async () => {
     const data = await storageAPI.get(this.__key);
-    console.log(data);
+    return (data[this.__key] as Value | undefined) ?? this.__defaultValue;
   };
 
   remove = async () => await storageAPI.remove(this.__key);
