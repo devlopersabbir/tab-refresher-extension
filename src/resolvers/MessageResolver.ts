@@ -4,7 +4,6 @@ import { RequestType } from "../@types";
 export function CreateMessageResolver<T extends RequestType>() {
   const resolvers: Record<string, (payload: unknown, sender: any) => unknown> =
     {};
-
   // @ts-ignore
   Browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("message: ", message);
