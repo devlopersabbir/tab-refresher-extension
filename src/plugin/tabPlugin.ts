@@ -3,7 +3,7 @@ import { RequestType } from "../@types";
 
 export async function sendRequestToExtension<
   RQST extends RequestType,
-  RSP = unknown
+  RSP = unknown,
 >(message: RQST): Promise<RSP> {
   const response = await Browser.runtime.sendMessage(message);
   return response as RSP;
@@ -11,7 +11,7 @@ export async function sendRequestToExtension<
 
 export async function sendRequestToTab<RQST extends RequestType, RSP = unknown>(
   tabId: number,
-  message: RQST
+  message: RQST,
 ): Promise<RSP> {
   const response = await Browser.tabs.sendMessage(tabId, message);
   return response as RSP;
@@ -19,7 +19,7 @@ export async function sendRequestToTab<RQST extends RequestType, RSP = unknown>(
 
 export async function sendRequestToActiveTab<
   RQST extends RequestType,
-  RSP = unknown
+  RSP = unknown,
 >(message: RQST): Promise<RSP> {
   const query: Browser.Tabs.QueryQueryInfoType = {
     active: true,
