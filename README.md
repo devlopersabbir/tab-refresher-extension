@@ -1,4 +1,4 @@
-## Tab Refresher Browser Extension
+## Tab Refresher Pro Browser Extension
 
 Tab Refresher Pro is a browser extension for configuring reliable per-tab auto-refresh jobs with presets, countdown badges, page overlays, and saved refresh profiles.
 
@@ -30,8 +30,8 @@ Tab Refresher Pro is a browser extension for configuring reliable per-tab auto-r
 
 ## Installation:
 
-1. Create a new folder for your extension
-2. Save all three files in that folder
+1. Download the latest version from the relase folder or from the github release
+2. Extract the zip folder so that you will get the ready to unpacked folder
 3. Open Chrome and go to `chrome://extensions/`
 4. Enable "Developer mode" (toggle in top right)
 5. Click "Load unpacked" and select your extension folder
