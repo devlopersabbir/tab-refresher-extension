@@ -2,7 +2,7 @@
   "name": "tab-refresher-pro",
   "description": "Tab Refresher Pro is free unlimited uses browser extension",
   "private": true,
-  "version": "0.0.7",
+  "version": "1.2.1",
   "type": "module",
   "author": {
     "email": "devlopersabbir@gmail.com",
@@ -74,8 +74,8 @@
     "build": "tsc && vite build",
     "test": "vitest",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "zip:chrome": "bun run build:chrome && tsx ./zip.ts",
-    "zip:firefox": "bun run build:firefox && tsx ./zip.ts",
+    "zip:chrome": "bun run build:chrome && tsx ./zip.ts TARGET=chrome",
+    "zip:firefox": "bun run build:firefox && tsx ./zip.ts TARGET=firefox",
     "build:chrome": "cross-env TARGET=chrome tsc && vite build",
     "build:firefox": "cross-env TARGET=firefox tsc && vite build"
   }
